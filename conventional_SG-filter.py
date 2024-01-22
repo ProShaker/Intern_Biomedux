@@ -1,27 +1,36 @@
 from def_AdaptiveSGfilter import *
 
+# 엑셀 파일에서 확인한 열의 이름을 리스트로 저장
+# ['12', '13', ..]
 start = 12
 end = 15
 col_head = [str(i) for i in range(start, end+1)]
 
 # first SG 필터의 매개변수
-first_window_size = [7, 9, 11, 13, 15]  # 윈도우 크기, 보통 홀수를 사용합니다.
+first_window_size = [7, 9, 11, 13, 15]  # 윈도우 크기, 보통 홀수를 사용
 first_polynomial_order = [1, 2, 3]  # 다항식의 차수
 
 # 엑셀 파일 경로
 excel_file = 'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/PCR_CURVE_DATA(240104).xlsx'
 
-# 엑셀 파일에서 데이터 읽기
+# 엑셀 파일에서 지정된 열의 데이터 읽기
 df_origin = pd.read_excel(excel_file, names=col_head)
 
-#well 개수를 저장하는 리스트
+# 열 개수를 저장하는 리스트
 col_num = df_origin.shape[1]
 
 # 원본, 필터링된 데이터를 저장하기 위한 리스트 선언
+
+#각 열마다 데이터를 저장할 2차원 리스트
 C_y1 = [[] for _ in range(col_num)]
-C_y1_filtered = [[copy.deepcopy(C_y1) for _ in range(len(first_polynomial_order))] for _ in range(len(first_window_size))]
-df_FSmoothing = [[copy.deepcopy(C_y1) for _ in range(len(first_polynomial_order))] for _ in range(len(first_window_size))]
-print(C_y1_filtered)
+
+# 다항식 차수와 Window Length별로 SG필터링을 적용하기 위해 4차원 리스트 생성
+C_y1_filtered = [[copy.deepcopy(C_y1) for _ in range(len(first_polynomial_order))]
+                                      for _ in range(len(first_window_size))]
+
+# 필터링 데이터를 판다스 데이터 프레임으로 변환할 리스트
+df_FSmoothing = [[copy.deepcopy(C_y1) for _ in range(len(first_polynomial_order))]
+                                      for _ in range(len(first_window_size))]
 
 # 각 well(12, 13..)의 데이터를 2차원 리스트에 저장
 for i in range(len(col_head)):
