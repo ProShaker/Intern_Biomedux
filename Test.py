@@ -1,22 +1,22 @@
+import matplotlib.pyplot as plt
 from def_AdaptiveSGfilter import *
 
-# 파일이 저장된 경로
-file_path = 'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/LabG20 그래프문제/'
-# smoothing한 파일을 저장할 경로
-save_path = 'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/smoothing/LabG20/'
+file_path = 'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/고농도/'
+save_path = 'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/smoothing/20이상/고농도/'
 
 # 스무딩할 txt 파일의 이름
 file_name_list = [
-    'log000020-pd20231027-1502-49',
-    'log000020-pd20231027-1718-49',
-    'log000020-pd20231030-0940-03',
-    'log000020-pd20231030-1339-08',
-    'log000020-pd20231030-1532-39',
-    'log000020-pd20231031-1548-16'
+    'log000007-pd20231101-1129-51',
+    'log000012-pd20231101-1333-29',
+    'log000013-pd20231102-1524-50',
+    'log000012-pd20231102-1525-03',
+    'log000007-pd20231103-1032-02',
+    'log000012-pd20231103-1032-28',
+    'log000004-pd20231103-1032-43'
 ]
 
 # SG 필터의 매개변수
-window_size = [5, 7, 9, 11, 13]  # 윈도우 크기, 보통 홀수를 사용합니다.
+window_size = [5, 7, 9, 11, 13]
 polynomial_order = [2]  # 다항식의 차수
 
 # 파일마다 스무딩을 진행하기 위해
@@ -32,7 +32,7 @@ for file_name in file_name_list:
 
     col_num = df_origin.shape[1]     # well 개수를 저장하는 리스트
     col_head = df_origin.columns     # 데이터의 열 제목을 저장하는 리스트
-
+    print("열제목 : ",col_head)
     # 필터링된 데이터를 저장하기 위한 리스트 선언
     C_y1 = [[] for _ in range(col_num)]
     C_y1_filtered = [[copy.deepcopy(C_y1) for _ in range(len(polynomial_order))] for _ in range(len(window_size))]
@@ -58,7 +58,6 @@ for file_name in file_name_list:
             df_FSmoothing[i][j] = pd.DataFrame(columns=col_head)
             for k in range(len(C_y1)):
                 df_FSmoothing[i][j][col_head[k]] = C_y1_filtered[i][j][k]
-    print("스무딩 데이터 길이 : ",df_FSmoothing)
 
     # # 엑셀 파일에 데이터 작성
     # with pd.ExcelWriter(save_path + file_name + '.xlsx') as writer:
@@ -69,8 +68,9 @@ for file_name in file_name_list:
     #             df_FSmoothing[i][j].to_excel(writer, sheet_name='Sheet_{}_{}'.
     #                                          format(window_size[i], polynomial_order[j]), index=False)
 
-    # ================================================ 수정 중인 부분 ================================================
-    fig, axes = plt.subplots(2, 3, figsize=(10, 10), sharex=False)
+    print("길이 : ", len(df_origin['Cycle']))
+# ================================================ 수정 중인 부분 ================================================
+    fig, axes = plt.subplots(2, 3, figsize=(10, 10), sharex=True)
 
     cnt = 0
     # subplot의 행 반복문
@@ -88,15 +88,19 @@ for file_name in file_name_list:
             else:
                 # 열 데이터를 plot에 추가하기 위한 반복문
                 for index in col_head[2:]:
-                    axes[j, k].plot(df_origin[col_head[0]], df_FSmoothing[cnt][0][index], label=str(index))
+                    axes[j, k].plot(df_origin[col_head[0]], df_FSmoothing[i - 1][0][index], label=str(index))
                 axes[j, k].set_title('Window Size : ' + str(window_size[cnt]))
                 cnt += 1
-            axes[j, k].legend()  # 범례 추가
+                axes[j, k].legend()  # 범례 추가
             axes[j, k].set_xlabel("Cycle")
             axes[j, k].grid(True)
-    # plt.show()
 
-    plt.savefig(f'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/smoothing/MemoryLength 변화/LabG20/{file_name}.png')
+            # CT값을 그래프에 표시
+            ct_value = ...  # CT값을 계산하는 코드
+            axes[j, k].text(0.5, 0.5, f"CT: {ct_value}", transform=axes[j, k].transAxes)
+
+    plt.show()
+
     # # 기울기 변화가 가장 큰 부분 표시
     # max_slope_index = np.argmax(df_origin[col_head[0]].diff().diff())
     # max_slope_cycle = df_origin.index[max_slope_index + 2]
@@ -107,3 +111,8 @@ for file_name in file_name_list:
     #                     fontsize=10, ha='center')
 
     # ================================================ 수정 중인 부분 ================================================
+
+
+
+
+

@@ -15,15 +15,21 @@ def second_derivative(x, A1, A2, x0, p):
     term1 = (A1 - A2) * p * (p - 1) * x ** (p - 2)
     term2 = x0 ** 2 * (1 + (x / x0) ** p) ** 2
     term3 = (p * x ** p) / (x0 ** p * (1 + (x / x0) ** p)) - 1
+
+    # term2가 0 혹은 무한대인 경우를 체크
+    if np.isinf(term2) or term2 == 0:
+        return np.nan  # 적절한 값 반환
+
     result = (term1 / term2) * term3
     return np.nan_to_num(result)  # NaN 값이나 무한대 값이 있으면 0으로 변환
 
 # 데이터를 읽어올 파일 경로
-e = 'C:/Users/pjy03/Downloads/LabG CTNG 결과/LabG20 그래프문제/log000020-pd20231031-1548-16.xlsx'
+e = 'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/LabG20 그래프문제/' + 'log000020-pd20231030-0940-03' + '.txt'
 
 # 엑셀 파일 불러오기
-df = pd.read_excel(e)
-
+df = pd.read_csv(e, sep='\t', index_col=None)
+# Cycle이 6 이후인 데이터만 선택, 초반 spike를 무시하기 위해
+df = df[df['Cycle'] > 5]
 # 분석할 데이터가 있는 열의 라벨
 selected_columns_labels = ['FAM', 'HEX', 'ROX', 'CY5']
 
@@ -32,8 +38,10 @@ plt.figure(figsize=(10, 6))
 
 # 각 열에 대해 그래프 plot
 for label in selected_columns_labels:
+
     # y_data : 각 사이클에서의 밝기값
     y_data = df[label].values
+
     # x_data : 사이클 번호
     x_data = np.arange(len(y_data))
 
@@ -71,5 +79,6 @@ plt.legend()
 # x축과 y축의 라벨을 설정합니다.
 plt.xlabel('Cycle')
 plt.ylabel('Brightness')
+plt.grid(True)
 # 그래프를 화면에 보여줍니다.
 plt.show()

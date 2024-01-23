@@ -17,7 +17,7 @@ file_name_list = [
 ]
 
 # SG 필터의 매개변수
-window_size = [19, 21, 23, 25, 27]
+window_size = [5, 7, 9, 11, 13]
 polynomial_order = [2]
 
 # 각 파일마다 스무딩을 수행하기 위한 반복문
@@ -67,13 +67,46 @@ for file_name in file_name_list:
             for k in range(len(C_y1)):
                 df_FSmoothing[i][j][col_head[k]] = C_y1_filtered[i][j][k]
 
-    # 엑셀 파일에 데이터 작성
-    with pd.ExcelWriter(save_path + file_name + '.xlsx') as writer:
-        df_origin.to_excel(writer,sheet_name='origin'.
-                           format(window_size[i], polynomial_order[j]),index=False)
-        for i in range(len(window_size)):
-            for j in range(len(polynomial_order)):
-                df_FSmoothing[i][j].to_excel(writer,sheet_name='Sheet_{}_{}'.
-                                             format(window_size[i], polynomial_order[j]),index=False)
+    # # 엑셀 파일에 데이터 작성
+    # with pd.ExcelWriter(save_path + file_name + '.xlsx') as writer:
+    #     df_origin.to_excel(writer,sheet_name='origin'.
+    #                        format(window_size[i], polynomial_order[j]),index=False)
+    #     for i in range(len(window_size)):
+    #         for j in range(len(polynomial_order)):
+    #             df_FSmoothing[i][j].to_excel(writer,sheet_name='Sheet_{}_{}'.
+    #                                          format(window_size[i], polynomial_order[j]),index=False)
 
-
+    # ================================================ 수정 중인 부분 ================================================
+    fig, axes = plt.subplots(2, 3, figsize=(10, 10), sharex=False)
+    cnt = 0
+    # subplot의 행 반복문
+    for j in range(2):
+        # subplot의 열 반복문
+        for k in range(3):
+            # 원본은 0, 0에 plot
+            if j == 0 and k == 0:
+                for index in col_head[2:]:
+                    axes[j, k].plot(df_origin[col_head[0]], df_origin[index], label=str(index))
+                axes[j, k].set_title(str(file_name))
+                axes[j, k].legend()  # 범례 추가
+            # 나머지 데이터는 행, 열을 바꿔가며 스무딩한 데이터 출력
+            else:
+                # 열 데이터를 plot에 추가하기 위한 반복문
+                for index in col_head[2:]:
+                    axes[j, k].plot(df_origin[col_head[0]], df_FSmoothing[cnt][0][index], label=str(index))
+                axes[j, k].set_title('Window Size : ' + str(window_size[cnt]))
+                cnt += 1
+            axes[j, k].legend()  # 범례 추가
+            axes[j, k].set_xlabel("Cycle")
+            axes[j, k].grid(True)
+    # plt.show()
+    plt.savefig(f'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/smoothing/MemoryLength 변화/저농도/{file_name}.png')
+    # # 기울기 변화가 가장 큰 부분 표시
+    # max_slope_index = np.argmax(df_origin[col_head[0]].diff().diff())
+    # max_slope_cycle = df_origin.index[max_slope_index + 2]
+    # max_slope_value = df_origin[col_head[0]][max_slope_index + 2]
+    # axes[0, 0].annotate('Max Slope', xy=(max_slope_cycle, max_slope_value),
+    #                     xytext=(max_slope_cycle, max_slope_value + 10),
+    #                     arrowprops=dict(facecolor='black', arrowstyle='->'),
+    #                     fontsize=10, ha='center')
+    # ================================================ 수정 중인 부분 ================================================
