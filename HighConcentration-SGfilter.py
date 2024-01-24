@@ -94,15 +94,7 @@ for file_name in file_name_list:
     # plt.show()
 
     plt.savefig(f'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/smoothing/MemoryLength 변화/고농도/{file_name}.png')
-    # # 기울기 변화가 가장 큰 부분 표시
-    # max_slope_index = np.argmax(df_origin[col_head[0]].diff().diff())
-    # max_slope_cycle = df_origin.index[max_slope_index + 2]
-    # max_slope_value = df_origin[col_head[0]][max_slope_index + 2]
-    # axes[0, 0].annotate('Max Slope', xy=(max_slope_cycle, max_slope_value),
-    #                     xytext=(max_slope_cycle, max_slope_value + 10),
-    #                     arrowprops=dict(facecolor='black', arrowstyle='->'),
-    #                     fontsize=10, ha='center')
-
+    dnldhk
     # ================================================ 수정 중인 부분 ================================================
 
 
