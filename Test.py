@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 from def_AdaptiveSGfilter import *
 
 file_path = 'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/고농도/'

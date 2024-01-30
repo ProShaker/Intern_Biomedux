@@ -1,21 +1,22 @@
 from def_AdaptiveSGfilter import *
 
-file_path = 'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/Negative/'
-save_path = 'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/smoothing/20이상/Negative/'
+# 파일이 저장된 경로
+file_path = 'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/원본 데이터/LabG CTNG 결과/LabG20 그래프문제/'
+# smoothing한 파일을 저장할 경로
+save_path = 'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/smoothing/LabG20/'
 
 # 스무딩할 txt 파일의 이름
 file_name_list = [
-    'log000007-pd20231109-1009-33',
-    'log000013-pd20231109-1010-05',
-    'log000009-pd20231109-1009-59',
-    'log000013-pd20231110-0858-13',
-    'log000007-pd20231110-0858-35',
-    'log000009-pd20231110-0858-22',
-    'log000004-pd20231110-0857-54'
+    'log000020-pd20231027-1502-49',
+    'log000020-pd20231027-1718-49',
+    'log000020-pd20231030-0940-03',
+    'log000020-pd20231030-1339-08',
+    'log000020-pd20231030-1532-39',
+    'log000020-pd20231031-1548-16'
 ]
 
 # SG 필터의 매개변수
-window_size = [5, 7, 9, 11, 13]
+window_size = [5, 7, 9, 11, 13]  # 윈도우 크기, 보통 홀수를 사용합니다.
 polynomial_order = [2]  # 다항식의 차수
 
 # 파일마다 스무딩을 진행하기 위해
@@ -68,8 +69,9 @@ for file_name in file_name_list:
     #             df_FSmoothing[i][j].to_excel(writer, sheet_name='Sheet_{}_{}'.
     #                                          format(window_size[i], polynomial_order[j]), index=False)
 
-        # ================================================ 수정 중인 부분 ================================================
+    # ================================================ 수정 중인 부분 ================================================
     fig, axes = plt.subplots(2, 3, figsize=(10, 10), sharex=False)
+
     cnt = 0
     # subplot의 행 반복문
     for j in range(2):
@@ -81,6 +83,7 @@ for file_name in file_name_list:
                     axes[j, k].plot(df_origin[col_head[0]], df_origin[index], label=str(index))
                 axes[j, k].set_title(str(file_name))
                 axes[j, k].legend()  # 범례 추가
+
             # 나머지 데이터는 행, 열을 바꿔가며 스무딩한 데이터 출력
             else:
                 # 열 데이터를 plot에 추가하기 위한 반복문
@@ -92,8 +95,8 @@ for file_name in file_name_list:
             axes[j, k].set_xlabel("Cycle")
             axes[j, k].grid(True)
     # plt.show()
-    plt.savefig(
-        f'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/smoothing/MemoryLength 변화/Negative/{file_name}.png')
+
+    plt.savefig(f'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/smoothing/MemoryLength 변화/LabG20/{file_name}.png')
     # # 기울기 변화가 가장 큰 부분 표시
     # max_slope_index = np.argmax(df_origin[col_head[0]].diff().diff())
     # max_slope_cycle = df_origin.index[max_slope_index + 2]
@@ -102,4 +105,5 @@ for file_name in file_name_list:
     #                     xytext=(max_slope_cycle, max_slope_value + 10),
     #                     arrowprops=dict(facecolor='black', arrowstyle='->'),
     #                     fontsize=10, ha='center')
+
     # ================================================ 수정 중인 부분 ================================================

@@ -1,7 +1,7 @@
 from def_AdaptiveSGfilter import *
 
 # 스무딩할 파일 저장된 경로
-file_path = 'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/저농도/'
+file_path = 'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/원본 데이터/LabG CTNG 결과/저농도/'
 # 스무딩한 파일을 저장할 경로
 save_path = 'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/smoothing/20이상/저농도'
 
@@ -31,7 +31,7 @@ for file_name in file_name_list:
 
     # 초반 spike를 무시하기 위해 Cycle이 6 이후인 데이터만 선택
     df_origin = df_origin[df_origin['Cycle'] > 5]
-    print(df_origin)
+
     col_num = df_origin.shape[1]     # well 개수를 저장하는 리스트
     col_head = df_origin.columns     # 데이터의 열 제목을 저장하는 리스트
 
@@ -77,36 +77,47 @@ for file_name in file_name_list:
     #                                          format(window_size[i], polynomial_order[j]),index=False)
 
     # ================================================ 수정 중인 부분 ================================================
+    # 2행 3열의 서브플롯을 생성하고, 각 서브플롯의 크기를 (10, 10)으로 설정합니다.
     fig, axes = plt.subplots(2, 3, figsize=(10, 10), sharex=False)
+
     cnt = 0
-    # subplot의 행 반복문
+    # 서브플롯의 행에 대한 반복문
     for j in range(2):
-        # subplot의 열 반복문
+        # 서브플롯의 열에 대한 반복문
         for k in range(3):
-            # 원본은 0, 0에 plot
+            # 첫 번째 서브플롯에는 원본 데이터를 그립니다.
             if j == 0 and k == 0:
+                # 'col_head'에 있는 각 열에 대해
                 for index in col_head[2:]:
+                    # 원본 데이터를 그립니다.
                     axes[j, k].plot(df_origin[col_head[0]], df_origin[index], label=str(index))
+                    # CT 값을 감지합니다.
+                    CT_x, CT_y = detect_CT(df_origin[index])
+                    # CT 값이 10과 44 사이에 있다면, 해당 점을 그립니다.
+                    if 10 < CT_x < 44:
+                        print(f"{index} ({file_name}): {CT_x}, {CT_y}")
+                        axes[j, k].scatter(CT_x, CT_y, c='red', label=f'{index} : {CT_x}')
+                # 서브플롯의 제목을 설정합니다.
                 axes[j, k].set_title(str(file_name))
-                axes[j, k].legend()  # 범례 추가
-            # 나머지 데이터는 행, 열을 바꿔가며 스무딩한 데이터 출력
+                # 범례를 추가합니다.
+                axes[j, k].legend()
+            # 나머지 서브플롯에는 스무딩된 데이터를 그립니다.
             else:
-                # 열 데이터를 plot에 추가하기 위한 반복문
+                # 'col_head'에 있는 각 열에 대해
                 for index in col_head[2:]:
+                    # 스무딩된 데이터를 그립니다.
                     axes[j, k].plot(df_origin[col_head[0]], df_FSmoothing[cnt][0][index], label=str(index))
+                # 서브플롯의 제목을 설정합니다.
                 axes[j, k].set_title('Window Size : ' + str(window_size[cnt]))
                 cnt += 1
-            axes[j, k].legend()  # 범례 추가
+            # 범례를 추가합니다.
+            axes[j, k].legend()
+            # x축 레이블을 설정합니다.
             axes[j, k].set_xlabel("Cycle")
+            # 그리드를 추가합니다.
             axes[j, k].grid(True)
-    # plt.show()
-    plt.savefig(f'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/smoothing/MemoryLength 변화/저농도/{file_name}.png')
-    # # 기울기 변화가 가장 큰 부분 표시
-    # max_slope_index = np.argmax(df_origin[col_head[0]].diff().diff())
-    # max_slope_cycle = df_origin.index[max_slope_index + 2]
-    # max_slope_value = df_origin[col_head[0]][max_slope_index + 2]
-    # axes[0, 0].annotate('Max Slope', xy=(max_slope_cycle, max_slope_value),
-    #                     xytext=(max_slope_cycle, max_slope_value + 10),
-    #                     arrowprops=dict(facecolor='black', arrowstyle='->'),
-    #                     fontsize=10, ha='center')
+    # 그래프를 출력합니다.
+    plt.show()
+
+    # plt.savefig(f'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/smoothing/MemoryLength 변화/고농도/{file_name}.png')
     # ================================================ 수정 중인 부분 ================================================

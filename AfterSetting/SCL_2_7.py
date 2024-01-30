@@ -1,9 +1,7 @@
-import matplotlib.pyplot as plt
-
 from def_AdaptiveSGfilter import *
 
-file_path = 'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/원본 데이터/LabG CTNG 결과/Negative/'
-# save_path = 'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/smoothing/fixed_2_7/Negative/'
+file_path = 'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/원본 데이터/LabG CTNG 결과/SCL 임상검체/'
+save_path = 'C:/Users/KimHyeongJun/Desktop/바이오메듀스/데이터/LabG CTNG 결과/smoothing/fixed_2_7/SCL/'
 
 # 그 파일에서 txt 파일만 배열로 생성
 file_name_list = [f for f in os.listdir(file_path) if f.endswith('.txt') and 'pd' in f]
@@ -77,8 +75,8 @@ for file_name in file_name_list:
     axes[1].set_xlabel("Cycle")
     axes[1].grid(True)
 
-    plt.show()
-    # plt.savefig(save_path + f'{file_name}.png')
+    # plt.show()
+    plt.savefig(save_path + f'{file_name}.png')
     # # ================================================ 수정 중인 부분 ================================================
 
 
