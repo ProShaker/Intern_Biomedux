@@ -23,22 +23,14 @@ for file_name in file_name_list:
     # 데이터의 열 제목을 저장하는 리스트
     col_heads = df_origin.columns
 
-    # 필터링된 데이터를 저장하기 위한 리스트 선언
-    C_y1 = [[] for _ in range(len(col_heads[2:]))]
-    df_filtered = [[] for _ in range(len(col_heads[2:]))]
+    # 데이터프레임의 복사본을 만듭니다.
+    df_filtered = df_origin.copy()
 
-    # 각 well의 데이터를 2차원 리스트에 저장
-    # Cycle,Time 열은 제외하여 인덱스 2부터 시작
-    for i, column in enumerate(col_heads[2:]):
-        C_y1[i] = df_origin[column].values.tolist()
+    # 복사본의 각 열에 대해 SG 필터 적용
+    for col_head in col_heads[2:]:
+        df_filtered[col_head] = savgol_filter(df_filtered[col_head], window_size, polynomial_order)
 
-    # 각 열에 대해 SG 필터 적용하고 데이터 프레임으로 변환
-    for index in range(len(col_heads[2:])):
-        C_y1[index] = savgol_filter(C_y1[index], window_size, polynomial_order)
-        df_filtered[index] = pd.DataFrame(C_y1[index], columns=[col_heads[index+2]])
-
-    # 모든 DataFrame을 하나로 합침
-    df_filtered = pd.concat(df_filtered, axis=1)
+    print(df_filtered)
 
     # # 엑셀 파일에 데이터 작성
     # with pd.ExcelWriter(save_path + file_name + '.xlsx') as writer:
